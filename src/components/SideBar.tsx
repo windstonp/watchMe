@@ -1,13 +1,19 @@
 import { useEffect, useState } from 'react';
+import { memo } from "react";
 import { GenreResponseProps } from '../@types/types';
 import { api } from '../services/api';
 import { Button } from './Button';
 interface SideBarItemsProps{
   handleClickButton: (id: number)=> void,
-  selectedGenreId: number,
+  genres: Array<{
+    id: number;
+    name: 'action' | 'comedy' | 'documentary' | 'drama' | 'horror' | 'family';
+    title: string;
+  }>;
+  selectedGenreId: number;
 }
 
-export function SideBar({handleClickButton, selectedGenreId}: SideBarItemsProps) {
+export function SideBarComponent({handleClickButton, selectedGenreId}: SideBarItemsProps) {
   const [genres, setGenres] = useState<GenreResponseProps[]>([]);
 
   useEffect(() => {
@@ -35,3 +41,8 @@ export function SideBar({handleClickButton, selectedGenreId}: SideBarItemsProps)
       </nav>
   );
 }
+
+export const SideBar = memo(SideBarComponent, (prevProps, nextProps) => {
+  return Object.is(prevProps.genres, nextProps.genres) &&
+    Object.is(prevProps.selectedGenreId, nextProps.selectedGenreId);
+})
